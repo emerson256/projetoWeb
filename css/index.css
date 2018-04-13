@@ -1,0 +1,27 @@
+/*CAROUSEL*/
+
+.caption-estilo {
+    background-color: rgba(0, 0, 0, 0.5);
+    margin-bottom: 10%;
+    padding: 5%;
+}
+
+
+/*MARKETING ICONS SECTION*/
+.col-lg-4{
+    text-align: center;
+    margin-bottom: 1.5em;
+}
+
+.servicos-icones {
+
+}
+
+.servicos-icones h2{
+    font-weight: 400;
+
+}
+
+.icone {
+    background-color: #13bc5f;
+}
