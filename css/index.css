@@ -1,5 +1,9 @@
 /*CAROUSEL*/
 
+.carousel-index {
+
+}
+
 .caption-estilo {
     background-color: rgba(0, 0, 0, 0.5);
     margin-bottom: 10%;
@@ -8,6 +12,13 @@
 
 
 /*MARKETING ICONS SECTION*/
+
+.featurette-heading {
+    font-weight: 400;
+    line-height: 1;
+    font-family: "Ubuntu",sans-serif;
+}
+
 .col-lg-4{
     text-align: center;
     margin-bottom: 1.5em;
@@ -19,6 +30,7 @@
 
 .servicos-icones h2{
     font-weight: 400;
+    font-family: "Ubuntu",sans-serif;
 
 }
 
