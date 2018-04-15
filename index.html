@@ -56,10 +56,10 @@
               </div>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="about.html">Criar conta</a>
+              <a class="nav-link" href="contas.html">Criar conta</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="services.html">Entrar</a>
+              <a href="#" class="nav-link" data-toggle="modal" data-target="#modal_login" >Entrar</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="contact.html">Sobre</a>
@@ -320,6 +320,49 @@
     wow.init();
   </script>
 
+
+      <!-- Modal login-->
+      <form class="modal fade" id="modal_login" method="POST" action="">
+
+        <div class="modal-dialog">
+
+          <div class="modal-content fundo_inscricao">
+
+            <div class="modal-header">
+
+              <h5 class="modal-title" id="janelaLabel">
+                Entrar
+              </h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+
+            <div class="modal-body">
+
+              <div class="row">
+
+                <div class="form-group col-md-12">
+                  <label for="email"><h6>E-mail</h6></label>
+                  <input type="email" class="form-control" id="email" name="email" placeholder="Digite seu e-mail" required>
+                </div>
+            
+                <div class="form-group col-md-12">
+                  <label for="senha"><h6>Senha</h6></label>
+                  <input type="password" class="form-control" id="senha" name="senha" placeholder="Digite seu senha" required maxlength="8">
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success">Salvar</button>
+              <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+            </div>
+
+          </div>
+        </div>
+      </form>
+      <!-- /.modal -->
 
 </body>
 
