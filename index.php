@@ -1,3 +1,6 @@
+<?php
+session_start();
+ ?>
 <!DOCTYPE html>
 <html lang="pt">
 
@@ -28,48 +31,12 @@
 
 <body>
 
-  <header>
-    <!-- Navigation -->
-    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark fixed-top">
-      <div class="container">
-        <a class="navbar-brand" href="index.html">konsertaki</a>
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-          aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-          <form class="form-inline mt-2 mt-md-0">
-            <input class="form-control mr-sm-2" type="text" placeholder="O que você precisa?" aria-label="search">
-            <button class="btn btn-outline-success my-2-sm-0">Buscar</button>
-          </form>
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPortfolio" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Serviços
-              </a>
-              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownPortfolio">
-                <a class="dropdown-item" href="alvenaria.html">Alvenaria</a>
-                <a class="dropdown-item" href="portfolio-2-col.html">Elétrica</a>
-                <a class="dropdown-item" href="portfolio-3-col.html">Hidráulica</a>
-                <a class="dropdown-item" href="portfolio-4-col.html">Jardinagem</a>
-                <a class="dropdown-item" href="portfolio-item.html">Limpeza</a>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="contas.html">Criar conta</a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link" data-toggle="modal" data-target="#modal_login">Entrar</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Sobre</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+<?php
 
-  </header>
+require_once('includes/header.php');
+
+ ?>
+
 
   <!-- Page Content -->
 
@@ -341,7 +308,7 @@
 
 
   <!-- Modal login-->
-  <form class="modal fade" id="modal_login" method="POST" action="">
+  <form class="modal fade" id="modal_login" method="POST" action="actions/login.php">
 
     <div class="modal-dialog">
 
@@ -378,7 +345,7 @@
         </div>
 
         <div class="modal-footer">
-          <button type="submit" class="btn btn-success">Entrar</button>
+          <button type="submit" class="btn btn-success" name="btn-entrar">Entrar</button>
           <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
         </div>
 

@@ -1,3 +1,120 @@
+<?php
+session_start();
+require_once("includes/conexao.php");
+
+$erros = array();
+
+?>
+
+<?php
+
+function clear($input) {
+    global $connect;
+    // sql injection
+    $var = mysqli_escape_string($connect, $input);
+    // xss
+    $var = htmlspecialchars($var);
+    return $var;
+}
+
+function email_existe($email) {
+    global $connect;
+    $sql = "SELECT email FROM usuarios WHERE email = '$email';";
+    $resultado = mysqli_query($connect,$sql);
+    if(mysqli_num_rows($resultado) > 0) {
+        return true;
+
+    } else {
+        return false;
+    }
+}
+
+// function buscar_id_usuario($email) {
+//  global $connect;
+//  $sql = "SELECT email FROM usuarios WHERE email = '$email';";
+//  $resultado = mysqli_query($connect,$sql);
+//  if(mysqli_num_rows($resultado) > 0) {
+//      return true;
+
+//  } else {
+//      return false;
+//  }   
+// }
+
+function buscar_id_servico($nomeServico) {
+    global $connect;
+    $sql = "SELECT id FROM servicos WHERE nome = '$nomeServico';";
+    $resultado = mysqli_query($connect,$sql);
+    $dados = mysqli_fetch_array($resultado);
+    if(mysqli_num_rows($resultado) > 0) {
+        return $dados['id'];
+
+    } else {
+        return -1;
+    }
+}
+
+function criar_usuario($email,$senha) {
+    global $connect;
+    $senha = md5($senha);
+    $sql = "INSERT INTO usuarios (email,senha,nivel_acesso) VALUES ('$email','$senha','1');";
+    $resultado = mysqli_query($connect,$sql);
+    //return mysqli_insert_id($connect);
+}
+
+function preparar_anuncio() {
+    global $connect;
+    
+    $sql = "INSERT INTO anuncios (ativo) VALUES ('0');";
+    $resultado = mysqli_query($connect,$sql);
+    //$sql = "INSERT INTO anuncios (ativo) VALUES ('0');";
+
+    return mysqli_insert_id($connect);
+}
+
+
+if(isset($_POST['btn-assinar'])) {
+
+    if(email_existe($_POST['email'])) {
+        // array_push($_SESSION['erros'],'Este email já está em uso!');
+        //$erro = true;
+
+        $erros[] = '<li>Este email já está em uso!</li>';
+    }
+
+    $nome = clear($_POST['nome']);
+    $sobrenome = clear($_POST['sobrenome']);
+    $usuarios_email = clear($_POST['email']);
+    $cpf = clear($_POST['cpf']);
+    $cnpj = clear($_POST['cnpj']);
+    $telefone1 = clear($_POST['telefone1']);
+    $telefone2 = clear($_POST['telefone2']);
+    $senha = $_POST['senha'];
+    $servico_id = buscar_id_servico($_POST['atuacao']);
+    $estado = clear($_POST['estado']);
+    $cidade = clear($_POST['cidade']);
+    // var_dump($_POST);
+
+    if(empty($erros)) {
+
+        criar_usuario($usuarios_email,$senha);
+        $anuncio_id = preparar_anuncio();
+        $sql = "INSERT INTO freelancers (nome,sobrenome,cpf,cnpj,telefone1,telefone2,estado,cidade,anuncio_id,servico_id, usuarios_email) VALUES ('$nome','$sobrenome','$cpf','$cnpj','$telefone1','$telefone2','$estado','$cidade','$anuncio_id','$servico_id','$usuarios_email');";
+        $resultado = mysqli_query($connect,$sql);
+
+        $_SESSION['logado'] = true;
+        $_SESSION['email'] = $usuarios_email;
+
+        header('Location: painelFreelancer.php');
+
+
+
+        //$sql = "INSERT INTO freelancers (nome,sobrenome,cpf,cnpj,telefone1,telefone2,cidade,) VALUES()"
+    }
+}
+
+?>
+
 <!doctype html>
 <html lang="en">
 
@@ -69,20 +186,42 @@
             </div>
             <div class="col-md-8 order-md-1">
                 <h4 class="mb-3">Crie sua conta</h4>
-                <form class="needs-validation" novalidate>
+                <form class="needs-validation" novalidate action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
                     <div class="row">
                         <div class="col-md-5 mb-3">
+                            <?php
+                            if(!empty($erros)):
+                                foreach($erros as $erro):
+                                    echo $erro;
+                                endforeach;
+                            echo "<hr>";
+                            endif;
+                             ?>
                             <label for="atuacao">Atuarei como:</label>
-                            <select class="custom-select d-block w-100" id="atuacao" required>
+                            <select class="custom-select d-block w-100" id="atuacao" name="atuacao" required>
                                 <option value="">Escolha...</option>
-                                <option>Eletricista</option>
-                                <option>Encanador</option>
+                                <?php
+                                 $sql = "SELECT * FROM servicos";
+                                 $resultado = mysqli_query($connect,$sql);
+                                 if(mysqli_num_rows($resultado) > 0):
+                                 while($dados = mysqli_fetch_array($resultado)):
+
+                                 ?>
+
+                                <option><?php echo $dados['nome']; ?></option>
+                                <?php
+                                 endwhile;
+                             endif;
+
+                                 ?>
+
+<!--                                 <option>Encanador</option>
                                 <option>Pintor</option>
-                                <option>Jardineiro</option>
+                                <option>Jardineiro</option> -->
 
                             </select>
                             <div class="invalid-feedback">
-                                Selecione um estado.
+                                Selecione um serviço.
                             </div>
                         </div>
 
@@ -90,15 +229,15 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="firstName">Nome</label>
-                            <input type="text" class="form-control" id="sobrnome" placeholder="Digite seu nome" value="" required>
+                            <label for="nome">Nome</label>
+                            <input type="text" class="form-control" id="nome" placeholder="Digite seu nome" value="" name="nome" required>
                             <div class="invalid-feedback">
                                 Nome é requerido.
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="lastName">Sobrenome</label>
-                            <input type="text" class="form-control" id="sobrenome" placeholder="Digite seu sobrenome" value="" required>
+                            <label for="sobrenome">Sobrenome</label>
+                            <input type="text" class="form-control" id="sobrenome" placeholder="Digite seu sobrenome" value="" required name="sobrenome">
                             <div class="invalid-feedback">
                                 Sobrenome é requerido.
                             </div>
@@ -107,15 +246,15 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="firstName">CPF</label>
-                            <input type="text" class="form-control" id="cpf" placeholder="Digite seu CPF" value="" required>
+                            <label for="cpf">CPF</label>
+                            <input type="text" class="form-control" id="cpf" placeholder="Digite seu CPF" value="" required name="cpf">
                             <div class="invalid-feedback">
                                 CPF é requerido.
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="lastName">CNPJ</label>
-                            <input type="text" class="form-control" id="cnpj" placeholder="Digite seu CNPJ" value="" required>
+                            <input type="text" class="form-control" id="cnpj" placeholder="Digite seu CNPJ" value="" name="cnpj">
                             <div class="invalid-feedback">
                                 CNPJ é requerido.
                             </div>
@@ -123,54 +262,55 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="firstName">Telefone</label>
-                            <input type="text" class="form-control" id="cpf" placeholder="O número que o cliente irá contatar" value="" required>
+                            <label for="telefone1">Telefone</label>
+                            <input type="text" class="form-control" id="telefone1" placeholder="O número que o cliente irá contatar" value="" required name="telefone1">
                             <div class="invalid-feedback">
                                 Telefone é requerido.
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="lastName">Telefone
-                                <span class="text-muted">(opcional)</span>
+                            <label for="telefone2">Telefone
+                                <span class="text-muted" >(opcional)</span>
                             </label>
-                            <input type="text" class="form-control" id="cnpj" placeholder="O número que o cliente irá contatar" value="">
+                            <input type="text" class="form-control" id="cnpj" placeholder="O número que o cliente irá contatar" value="" name="telefone2">
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="email">Email
                             <span class="text-muted">(Para acessar conta)</span>
+
                         </label>
-                        <input type="email" class="form-control" id="email" placeholder="Digite um email válido">
+                        <input type="email" class="form-control" id="email" placeholder="Digite um email válido" name="email">
                         <div class="invalid-feedback">
                             Email é requerido para efetuar login.
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="email">Senha
+                        <label for="senha">Senha
                             <span class="text-muted">(Para acessar conta)</span>
                         </label>
-                        <input type="password" class="form-control" id="senha" placeholder="Insira uma senha">
+                        <input type="password" class="form-control" id="senha" placeholder="Insira uma senha" name="senha">
                         <div class="invalid-feedback">
-                            Email é requerido para efetuar login.
+                            Senha é requerida para efetuar login.
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-5 mb-3">
-                            <label for="country">Estado</label>
-                            <select class="custom-select d-block w-100" id="estado" required>
+                            <label for="estado">Estado</label>
+                            <select class="custom-select d-block w-100" id="estado" required name="estado">
                                 <option value="">Escolha...</option>
-                                <option>Bahia</option>
+                                <option>BA</option>
                             </select>
                             <div class="invalid-feedback">
                                 Selecione um estado.
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="state">Cidade</label>
-                            <select class="custom-select d-block w-100" id="state" required>
+                            <label for="cidade">Cidade</label>
+                            <select class="custom-select d-block w-100" id="cidade" required name="cidade">
                                 <option value="">Escolha...</option>
                                 <option>Jequié</option>
                             </select>
@@ -186,22 +326,22 @@
 
                     <div class="d-block my-3">
                         <div class="custom-control custom-radio">
-                            <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked required>
+                            <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked >
                             <label class="custom-control-label" for="credit">Cartão de crédito</label>
                         </div>
                         <div class="custom-control custom-radio">
-                            <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" required>
+                            <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" >
                             <label class="custom-control-label" for="debit">Boleto</label>
                         </div>
                         <div class="custom-control custom-radio">
-                            <input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" required>
+                            <input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" >
                             <label class="custom-control-label" for="paypal">PayPal</label>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="cc-name">Nome do cartão</label>
-                            <input type="text" class="form-control" id="cc-name" placeholder="" required>
+                            <input type="text" class="form-control" id="cc-name" placeholder="" >
                             <small class="text-muted">Full name as displayed on card</small>
                             <div class="invalid-feedback">
                                 Name on card is required
@@ -209,7 +349,7 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="cc-number">Número</label>
-                            <input type="text" class="form-control" id="cc-number" placeholder="" required>
+                            <input type="text" class="form-control" id="cc-number" placeholder="" >
                             <div class="invalid-feedback">
                                 Credit card number is required
                             </div>
@@ -218,14 +358,14 @@
                     <div class="row">
                         <div class="col-md-3 mb-3">
                             <label for="cc-expiration">Validade</label>
-                            <input type="text" class="form-control" id="cc-expiration" placeholder="" required>
+                            <input type="text" class="form-control" id="cc-expiration" placeholder="" >
                             <div class="invalid-feedback">
                                 Expiration date required
                             </div>
                         </div>
                         <div class="col-md-3 mb-3">
                             <label for="cc-cvv">CVV</label>
-                            <input type="text" class="form-control" id="cc-cvv" placeholder="" required>
+                            <input type="text" class="form-control" id="cc-cvv" placeholder="" >
                             <div class="invalid-feedback">
                                 Security code required
                             </div>
@@ -239,7 +379,7 @@
                         </label>
                     </div>
                     <hr class="mb-4">
-                    <button class="btn btn-success btn-lg btn-block" type="submit">Assinar por 30 dias</button>
+                    <button class="btn btn-success btn-lg btn-block" type="submit" name="btn-assinar">Assinar por 30 dias</button>
                 </form>
             </div>
         </div>

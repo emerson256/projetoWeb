@@ -1,3 +1,41 @@
+<?php
+require_once("includes/conexao.php");
+session_start();
+
+$dados_freelancer = array();
+$dados_anuncio = array();
+
+?>
+
+
+<?php
+
+function eh_freelancer($email) {
+    global $connect;
+    $sql = "SELECT id FROM freelancers WHERE usuarios_email = '$email';";
+    $resultado = mysqli_query($connect,$sql);
+    if(mysqli_num_rows($resultado) > 0) {
+        return true;
+    }
+    return false;
+}
+
+
+
+?>
+
+<?php
+if($_SESSION['logado'] == true && eh_freelancer($_SESSION['email'])) {
+    $email = $_SESSION['email'];
+    $sql = "SELECT * FROM freelancers WHERE usuarios_email = '$email';";
+    $resultado = mysqli_query($connect,$sql);
+    if(mysqli_num_rows($resultado) > 0) {
+        $dados_freelancer = mysqli_fetch_array($resultado);
+        //echo $dados_freelancer['nome'];
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -21,55 +59,16 @@
 <body>
 
     <!-- Navigation -->
-    <header>
-        <!-- Navigation -->
-        <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark fixed-top">
-            <div class="container">
-                <a class="navbar-brand" href="index.html">konsertaki</a>
-                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-                    aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <form class="form-inline mt-2 mt-md-0">
-                        <input class="form-control mr-sm-2" type="text" placeholder="O que você precisa?" aria-label="search">
-                        <button class="btn btn-outline-success my-2-sm-0">Buscar</button>
-                    </form>
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPortfolio" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Serviços
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownPortfolio">
-                                <a class="dropdown-item" href="portfolio-1-col.html">Alvenaria</a>
-                                <a class="dropdown-item" href="portfolio-2-col.html">Elétrica</a>
-                                <a class="dropdown-item" href="portfolio-3-col.html">Hidráulica</a>
-                                <a class="dropdown-item" href="portfolio-4-col.html">Jardinagem</a>
-                                <a class="dropdown-item" href="portfolio-item.html">Limpeza</a>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="contas.html">Criar conta</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link" data-toggle="modal" data-target="#modal_login">Entrar</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="contact.html">Sobre</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+<?php
 
-    </header>
+require_once('includes/header.php');
 
-
+ ?>
     <!-- Page Content -->
     <div class="container">
 
         <!-- Page Heading/Breadcrumbs -->
-        <h1 class="mt-4 mb-3">Olá, João
+        <h1 class="mt-4 mb-3">Olá, <?php echo $dados_freelancer['nome']; ?>
         </h1>
 
         <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -95,13 +94,34 @@
                             </a>
                             <div class="card-body">
                                 <h4 class="card-title">
-                                    <a href="#">João Encanador</a>
+                                    <?php
+
+                                     $anuncio_id = $dados_freelancer['anuncio_id'];
+                                     $sql = "SELECT * FROM anuncios WHERE id = '$anuncio_id;'";
+                                     $resultado = mysqli_query($connect,$sql);
+                                     if(mysqli_num_rows($resultado) > 0):
+                                         $dados_anuncio = mysqli_fetch_array($resultado);
+                                         //echo $dados['titulo_anuncio'];
+
+
+                                     ?>
+
+                                    <a href="#"> <?php echo $dados_anuncio['titulo_anuncio']; ?> </a>
                                 </h4>
-                                <p class="card-text">Olá, meu nome é João. Trabalho com encanação há 8 anos e sou um profissional extremamente
-                                    lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet numquam aspernatur eum
-                                    quasi sapiente nesciunt? Voluptatibus sit, repellat sequi itaque deserunt, dolores in,
-                                    nesciunt, illum tempora ex quae? Nihil, dolorem!
-                                </p>
+                                <p class="card-text">
+                                    <?php
+
+                                     // $anuncio_id = $dados['anuncio_id'];
+                                     // $sql = "SELECT * FROM anuncios WHERE id = '$anuncio_id;";
+                                     // $resultado = mysqli_query($connect,$sql);
+                                     // if(mysqli_num_rows($resultado) > 0):
+                                     //     $dados = mysqli_fetch_array($resultado);
+                                         echo $dados_anuncio['descricao'];
+
+                                      endif;
+
+                                     ?>
+                                 </p>
                             </div>
                         </div>
                         <hr>
@@ -204,12 +224,24 @@
                     </div>
                     <div class="col-md-8 order-md-1">
                         <h4 class="mb-3">Edite seu anúncio</h4>
+                        
+
                         <form class="needs-validation" novalidate>
+
                             <div class="row">
                                 <div class="col-md-10 mb-3">
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="titulo">Título do Anúncio</label>
+                                        <input type="text" class="form-control" id="titulo" placeholder="Título do seu Anúncio" value="<?php echo $dados_anuncio['titulo_anuncio']; ?>" required name="titulo_anuncio">
+                                        <div class="invalid-feedback">
+                                            Título é requerido.
+                                        </div>
+                                    </div>
+
                                     <div class="mb-3">
-                                        <label for="email">Anúncio</label>
-                                        <textarea type="email" class="form-control" id="email" placeholder="O que você faz? Conte mais sobre você."></textarea>
+                                        <label for="descricao">Anúncio</label>
+                                        <textarea type="text" class="form-control" id="descricao" placeholder="O que você faz? Conte mais sobre você." name="descricao"><?php echo $dados_anuncio['descricao']; ?></textarea>
                                     </div>
                                 </div>
 
@@ -217,37 +249,42 @@
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="firstName">Telefone</label>
-                                    <input type="text" class="form-control" id="cpf" placeholder="O número que o cliente irá contatar" value="" required>
+                                    <label for="telefone1">Telefone</label>
+                                    <input type="text" class="form-control" id="telefone1" placeholder="O número que o cliente irá contatar" value="<?php echo $dados_freelancer['telefone1']; ?>" required name="telefone1">
                                     <div class="invalid-feedback">
                                         Telefone é requerido.
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="lastName">Telefone
+                                    <label for="telefone2">Telefone
                                         <span class="text-muted">(opcional)</span>
                                     </label>
-                                    <input type="text" class="form-control" id="cnpj" placeholder="O número que o cliente irá contatar" value="">
+                                    <input type="text" class="form-control" id="cnpj" placeholder="O número que o cliente irá contatar" value="<?php echo $dados_freelancer['telefone2']; ?>" name="telefone2">
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="col-md-5 mb-3">
-                                    <label for="country">Estado</label>
-                                    <select class="custom-select d-block w-100" id="estado" required>
+                                    <label for="estado">Estado</label>
+                                    <select class="custom-select d-block w-100" id="estado" name="estado" required>
                                         <option value="">Escolha...</option>
-                                        <option>Bahia</option>
+                                        <?php if($dados_freelancer['estado'] == 'BA'):?>
+                                         <option selected>Bahia</option>
+                                     <?php endif; ?>
+                                        
                                     </select>
                                     <div class="invalid-feedback">
                                         Selecione um estado.
                                     </div>
                                 </div>
                                 <div class="col-md-4 mb-3">
-                                    <label for="state">Cidade</label>
-                                    <select class="custom-select d-block w-100" id="state" required>
+                                    <label for="cidade">Cidade</label>
+                                    <select class="custom-select d-block w-100" id="estado" name="estado" required>
                                         <option value="">Escolha...</option>
-                                        <option>Jequié</option>
-                                    </select>
+                                        <?php if($dados_freelancer['cidade'] == 'Jequié'):?>
+                                         <option selected>Jequié</option>
+                                     <?php endif; ?>
+                                 </select>
                                     <div class="invalid-feedback">
                                         Selecione uma cidade.
                                     </div>
@@ -255,7 +292,7 @@
                             </div>
 
                             <hr class="mb-4">
-                            <button class="btn btn-success btn-lg btn-block" type="submit">Salvar</button>
+                            <button class="btn btn-success btn-lg btn-block" type="submit" name="btn-salvar">Salvar</button>
                         </form>
                     </div>
                 </div>
@@ -290,3 +327,13 @@
 </body>
 
 </html>
+
+<?php
+
+    }
+    
+} else {
+    header('Location: index.php');
+}
+
+?>
