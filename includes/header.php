@@ -32,7 +32,7 @@ require_once("conexao.php");
 
                  ?>
 
-                <a class="dropdown-item" href="alvenaria.html"><?php echo $dados['nome'] ?></a>
+                <a class="dropdown-item" href="categoria.php?categoria=<?php echo $dados['nome'] ?>"><?php echo $dados['nome'] ?></a>
 <!--                 <a class="dropdown-item" href="portfolio-2-col.html">Elétrica</a>
                 <a class="dropdown-item" href="portfolio-3-col.html">Hidráulica</a>
                 <a class="dropdown-item" href="portfolio-4-col.html">Jardinagem</a>

@@ -21,46 +21,10 @@
 
 <body>
 
-  <!-- Navigation -->
-  <header>
-    <!-- Navigation -->
-    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark fixed-top">
-      <div class="container">
-        <a class="navbar-brand" href="index.html">konsertaki</a>
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-          aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPortfolio" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Serviços
-              </a>
-              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownPortfolio">
-                <a class="dropdown-item" href="portfolio-1-col.html">Alvenária</a>
-                <a class="dropdown-item" href="portfolio-2-col.html">Elétrica</a>
-                <a class="dropdown-item" href="portfolio-3-col.html">Hidráulica</a>
-                <a class="dropdown-item" href="portfolio-4-col.html">Jardinagem</a>
-                <a class="dropdown-item" href="portfolio-item.html">Limpeza</a>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="contas.html">Criar conta</a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link" data-toggle="modal" data-target="#modal_login">Entrar</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="contact.html">Sobre</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+<?php
+include_once("includes/header.php");
 
-  </header>
-
+ ?>
   <!-- Page Content -->
   <div class="container">
     <div class="card-deck mb-3 mt-3 text-center">
@@ -87,8 +51,8 @@
           <h4 class="my-0 font-weight-normal">Quero contratar </h4>
         </div>
         <div class="card-body">
-          <h1 class="card-title pricing-card-title">$0
-            <small class="text-muted">/ mo</small>
+          <h1 class="card-title pricing-card-title">Gratuito
+<!--             <small class="text-muted">/ mo</small> -->
           </h1>
           <ul class="list-unstyled mt-3 mb-4">
             <li>Dê o feedback dos serviços contratados</li>

@@ -31,6 +31,11 @@ if($_SESSION['logado'] == true && eh_freelancer($_SESSION['email'])) {
     $resultado = mysqli_query($connect,$sql);
     if(mysqli_num_rows($resultado) > 0) {
         $dados_freelancer = mysqli_fetch_array($resultado);
+
+        $anuncio_id = $dados_freelancer['anuncio_id'];
+        $sql = "SELECT id,titulo_anuncio,descricao,imagem FROM anuncios WHERE id = '$anuncio_id'; ";
+        $dados = mysqli_query($connect, $sql);
+        $dados_anuncio = mysqli_fetch_array($dados);
         //echo $dados_freelancer['nome'];
 
 ?>
@@ -90,7 +95,7 @@ require_once('includes/header.php');
                     <div class="col-lg-8">
                         <div class="card ">
                             <a href="#">
-                                <img class="card-img-top" src="img/joao.jpg" alt="">
+                                <img class="card-img-top" src="imgs-anuncios/<?php echo $dados_anuncio['imagem'];?>" alt="">
                             </a>
                             <div class="card-body">
                                 <h4 class="card-title">
@@ -184,7 +189,7 @@ require_once('includes/header.php');
                         <h5>Expiração do Anúncio</h5>
                         <!-- Progress Widget -->
                         <div class="progress">
-                            <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0"
+                            <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 100%" aria-valuenow="25" aria-valuemin="0"
                                 aria-valuemax="100"></div>
                         </div>
 
@@ -202,7 +207,7 @@ require_once('includes/header.php');
                             <div class="card-body">
                                 <div class="row text-center">
                                     <div class="col-lg-12">
-                                        <h5>256 visualizações</h5>
+                                        <h5>0 visualizações</h5>
                                     </div>
                                 </div>
                             </div>
@@ -216,17 +221,18 @@ require_once('includes/header.php');
             <div class="tab-pane fade" id="editarAnuncio" role="tabpanel" aria-labelledby="profile-tab">
                 <div class="row">
                     <div class="col-md-4 order-md-2 mb-4">
-                        <img class="img-fluid" src="img/joao.jpg" alt="">
-                        <form action="">
-                            <input type="file" name="pic" accept="image/*">
-                            <input type="submit">
+                        <img class="img-fluid" src="imgs-anuncios/<?php echo $dados_anuncio['imagem'];?>" alt="">
+                        <form action="actions/enviar_imagem.php" enctype="multipart/form-data" method="POST">
+                            <input type="hidden" value="<?php echo $dados_freelancer['anuncio_id']; ?>" name="anuncio_id">
+                            <input type="file" name="anuncio-foto" accept="image/*">
+                            <input type="submit" value="Enviar imagem" name="btn-enviar">
                         </form>
                     </div>
                     <div class="col-md-8 order-md-1">
                         <h4 class="mb-3">Edite seu anúncio</h4>
                         
 
-                        <form class="needs-validation" novalidate>
+                        <form class="needs-validation" novalidate action="actions/salvar_anuncio.php" method="POST">
 
                             <div class="row">
                                 <div class="col-md-10 mb-3">
@@ -279,7 +285,7 @@ require_once('includes/header.php');
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label for="cidade">Cidade</label>
-                                    <select class="custom-select d-block w-100" id="estado" name="estado" required>
+                                    <select class="custom-select d-block w-100" id="estado" name="cidade" required>
                                         <option value="">Escolha...</option>
                                         <?php if($dados_freelancer['cidade'] == 'Jequié'):?>
                                          <option selected>Jequié</option>

@@ -1,5 +1,6 @@
 <?php
 session_start();
+
  ?>
 <!DOCTYPE html>
 <html lang="pt">
@@ -33,7 +34,7 @@ session_start();
 
 <?php
 
-require_once('includes/header.php');
+include_once('includes/header.php');
 
  ?>
 
@@ -61,7 +62,7 @@ require_once('includes/header.php');
         <div class="carousel-item" style="background-image: url('img/teste2.jpg')">
           <div class="carousel-caption  d-md-block caption-estilo">
             <h3>Anuncie seu serviço </h3>
-            <a href="cadastro.html" class="btn btn-success">Cadastre-se</a>
+            <a href="cadastro.php" class="btn btn-success">Cadastre-se</a>
           </div>
         </div>
 

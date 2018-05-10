@@ -59,7 +59,12 @@ function criar_usuario($email,$senha) {
     $senha = md5($senha);
     $sql = "INSERT INTO usuarios (email,senha,nivel_acesso) VALUES ('$email','$senha','1');";
     $resultado = mysqli_query($connect,$sql);
-    //return mysqli_insert_id($connect);
+    return mysqli_insert_id($connect);
+}
+
+function criar_pasta_anuncio($id) {
+    mkdir('img-anuncios/'.$id);
+
 }
 
 function preparar_anuncio() {
@@ -97,14 +102,18 @@ if(isset($_POST['btn-assinar'])) {
 
     if(empty($erros)) {
 
-        criar_usuario($usuarios_email,$senha);
+        $id_usuario = criar_usuario($usuarios_email,$senha);
         $anuncio_id = preparar_anuncio();
+        //criar_pasta_anuncio($anuncio_id);
         $sql = "INSERT INTO freelancers (nome,sobrenome,cpf,cnpj,telefone1,telefone2,estado,cidade,anuncio_id,servico_id, usuarios_email) VALUES ('$nome','$sobrenome','$cpf','$cnpj','$telefone1','$telefone2','$estado','$cidade','$anuncio_id','$servico_id','$usuarios_email');";
         $resultado = mysqli_query($connect,$sql);
 
         $_SESSION['logado'] = true;
         $_SESSION['email'] = $usuarios_email;
-
+        $_SESSION['nivel_acesso'] = '1';
+        $_SESSION['nome'] = $nome;
+        $_SESSION['id_usuario'] = $id_usuario;
+        //echo $anuncio_id;
         header('Location: painelFreelancer.php');
 
 
@@ -136,48 +145,7 @@ if(isset($_POST['btn-assinar'])) {
 
 <body class="bg-light">
 
-    <header class="mb-5">
-        <!-- Navigation -->
-        <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark fixed-top">
-            <div class="container">
-                <a class="navbar-brand" href="index.html">konsertaki</a>
-                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-                    aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <form class="form-inline mt-2 mt-md-0">
-                        <input class="form-control mr-sm-2" type="text" placeholder="O que você precisa?" aria-label="search">
-                        <button class="btn btn-outline-success my-2-sm-0">Buscar</button>
-                    </form>
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPortfolio" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Serviços
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownPortfolio">
-                                <a class="dropdown-item" href="alvenaria.html">Alvenaria</a>
-                                <a class="dropdown-item" href="portfolio-2-col.html">Elétrica</a>
-                                <a class="dropdown-item" href="portfolio-3-col.html">Hidráulica</a>
-                                <a class="dropdown-item" href="portfolio-4-col.html">Jardinagem</a>
-                                <a class="dropdown-item" href="portfolio-item.html">Limpeza</a>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="contas.html">Criar conta</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link" data-toggle="modal" data-target="#modal_login">Entrar</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="painelFreelancer.html">Painel</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-    </header>
+<?php include_once("includes/header.php"); ?>
 
     <div class="container" style="margin-top: 5em;">
         <div class="row">

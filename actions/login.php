@@ -2,7 +2,7 @@
 require_once('../includes/conexao.php');
 
 function obter_id_freelancer($email) {
-
+	global $connect;
 	$sql = "SELECT id FROM freelancers WHERE usuarios_email = '$email';";
 	$resultado = mysqli_query($connect,$sql);
 	if(mysqli_num_rows($resultado) > 0) {
@@ -14,7 +14,7 @@ function obter_id_freelancer($email) {
 }
 
 function obter_nome_freelancer($email) {
-
+	global $connect;
 	$sql = "SELECT nome FROM freelancers WHERE usuarios_email = '$email';";
 	$resultado = mysqli_query($connect,$sql);
 	if(mysqli_num_rows($resultado) > 0) {
